@@ -1,0 +1,21 @@
+
+spring:
+  application:
+    name: poop-together
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/poop-together
+    username: root
+    password: ${DB_PASSWORD:root}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  
+jwt:
+  signer-key: "my-secret-key"

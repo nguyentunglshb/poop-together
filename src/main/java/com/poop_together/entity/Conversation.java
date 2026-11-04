@@ -2,10 +2,15 @@ package com.poop_together.entity;
 
 import java.time.LocalDate;
 
+import com.poop_together.enums.ConversationType;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,15 +22,14 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor 
 @FieldDefaults (level = AccessLevel.PRIVATE)
 @Entity 
-public class UserDailyStats {
-
+@Table (name = "conversations")
+public class Conversation {
     @Id 
     @GeneratedValue (strategy = GenerationType.UUID)
     String id;
 
-    String user_id;
-    LocalDate stat_date;
-    Number total_second;
-    Number session_count;
-    LocalDate updated_at;
+    @Enumerated (EnumType.STRING)
+    ConversationType type;
+
+    LocalDate created_at;
 }

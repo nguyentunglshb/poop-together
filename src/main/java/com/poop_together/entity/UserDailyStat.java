@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,13 +18,16 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor 
 @FieldDefaults (level = AccessLevel.PRIVATE)
 @Entity 
-public class RefreshTokens {
+@Table (name = "user_daily_stats")
+public class UserDailyStat {
+
     @Id 
     @GeneratedValue (strategy = GenerationType.UUID)
     String id;
+
     String user_id;
-    String token_hash;
-    LocalDate expires_at;
-    LocalDate revoked_at;
-    LocalDate created_at;
+    LocalDate stat_date;
+    Number total_second;
+    Number session_count;
+    LocalDate updated_at;
 }

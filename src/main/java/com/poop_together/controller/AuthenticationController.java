@@ -1,12 +1,9 @@
 package com.poop_together.controller;
 
-import java.text.ParseException;
-
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nimbusds.jose.JOSEException;
 import com.poop_together.dto.ApiResponse;
 import com.poop_together.dto.request.AuthenticationRequest;
 import com.poop_together.dto.request.IntrospectRequest;
@@ -34,7 +31,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/introspect")
-    ApiResponse<IntrospectResponse> authenticate(@RequestBody IntrospectRequest req) throws JOSEException, ParseException {
+    ApiResponse<IntrospectResponse> introspect(@RequestBody IntrospectRequest req) {
         var result = authenticationService.introspect(req);
         return ApiResponse.<IntrospectResponse>builder().result(result).build();
     }

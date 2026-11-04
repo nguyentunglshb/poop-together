@@ -1,6 +1,7 @@
 package com.poop_together.exception;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -16,6 +17,11 @@ public class GlobalExceptionHandler {
         apiResponse.setCode(errorCode.getCode());
         apiResponse.setMessage(errorCode.getMessage());
         return ResponseEntity.status(errorCode.getCode()).body(apiResponse);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    ResponseEntity<ApiResponse> handlingUnreadableBody() {
+        return handlingAppException(new AppException(ErrorCode.INVALID_REQUEST_BODY));
     }
 
     @ExceptionHandler(value = AppException.class)

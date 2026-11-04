@@ -1,17 +1,12 @@
-package com.poop_together.entity;
+package com.poop_together.dto.response.friendship;
 
 import java.time.LocalDate;
 
 import com.poop_together.enums.FriendshipStatus;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -19,20 +14,13 @@ import lombok.experimental.FieldDefaults;
 @Data 
 @NoArgsConstructor 
 @AllArgsConstructor 
+@Builder 
 @FieldDefaults (level = AccessLevel.PRIVATE)
-@Entity 
-public class FriendShips {
-
-    @Id 
-    @GeneratedValue (strategy = GenerationType.UUID)
+public class FriendShipResponse {
     String id;
-    
     String requester_id;
     String addressee_id;
-
-    @Enumerated (EnumType.STRING)
-    FriendshipStatus status;
-    
     LocalDate created_at;
     LocalDate responded_at;
+    FriendshipStatus status;
 }

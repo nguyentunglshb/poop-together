@@ -2,6 +2,7 @@ package com.poop_together.service;
 
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.poop_together.dto.request.CreateUserDto;
@@ -22,6 +23,7 @@ import lombok.experimental.FieldDefaults;
 public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
+    PasswordEncoder passwordEncoder;
 
     public UserResponse createUser(CreateUserDto req) {
         if(userRepository.existsByUsername(req.getUsername())) {
@@ -29,7 +31,7 @@ public class UserService {
         }
 
         User user = userMapper.toUser(req);
-        user.setPassword_hash(req.getPassword());
+        user.setPassword_hash(passwordEncoder.encode(req.getPassword()));
 
         return userMapper.toUserResponse(userRepository.save(user));
     }

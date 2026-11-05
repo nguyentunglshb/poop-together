@@ -1,4 +1,3 @@
-
 spring:
   application:
     name: poop-together
@@ -16,6 +15,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
-  
+
 jwt:
-  signer-key: "my-secret-key"
+  signer-key: "3f514aa0b9c7f6764efb64609425de35912df4c01545a3569a1ed1a34b0343e7"

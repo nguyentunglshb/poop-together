@@ -1,13 +1,17 @@
 package com.poop_together.config;
 
+import java.nio.charset.StandardCharsets;
+
 import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
@@ -29,11 +33,20 @@ public class SecurityConfig {
     protected String SIGNER_KEY;
 
 	@Bean
+	@Order(1)
+	public SecurityFilterChain publicEndpointsFilterChain(HttpSecurity http) throws Exception {
+		return http
+			.securityMatchers(matchers -> matchers.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS))
+			.csrf(AbstractHttpConfigurer::disable)
+			.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
+			.build();
+	}
+
+	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 			.authorizeHttpRequests((authorize) -> authorize
-				.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-				.requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name())
+				// .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name())
                 .anyRequest().authenticated()
 			);
 
@@ -57,7 +70,7 @@ public class SecurityConfig {
 
     @Bean
     JwtDecoder jwtDecoder() {
-        SecretKeySpec secretKeySpec = new SecretKeySpec(SIGNER_KEY.getBytes(), "HS512");
+        SecretKeySpec secretKeySpec = new SecretKeySpec(SIGNER_KEY.getBytes(StandardCharsets.UTF_8), "HS512");
         return NimbusJwtDecoder.withSecretKey(secretKeySpec)
             .macAlgorithm(MacAlgorithm.HS512)
             .build()

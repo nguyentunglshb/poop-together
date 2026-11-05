@@ -10,6 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,7 +22,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor 
 @FieldDefaults (level = AccessLevel.PRIVATE)
 @Entity 
-public class LeaderboardSnapshots {
+@Table (name = "leaderboard_snapshots")
+public class LeaderboardSnapshot {
     @Id 
     @GeneratedValue (strategy = GenerationType.UUID)
     String id;

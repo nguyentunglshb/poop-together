@@ -2,10 +2,16 @@ package com.poop_together.entity;
 
 import java.time.LocalDate;
 
+import com.poop_together.enums.SessionStatus;
+import com.poop_together.enums.StopReason;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,14 +23,23 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor 
 @FieldDefaults (level = AccessLevel.PRIVATE)
 @Entity 
-public class Messages {
+@Table (name = "poop_sessions")
+public class PoopSession {
     @Id 
     @GeneratedValue (strategy = GenerationType.UUID)
     String id;
+    
+    String user_id;
+    LocalDate started_at;
+    LocalDate ended_at;
+    Integer duration_seconds;
+    
+    @Enumerated (EnumType.STRING)
+    SessionStatus status;
 
-    String conversation_id;
-    String sender_id;
-    String content;
+    @Enumerated (EnumType.STRING)
+    StopReason stop_reason;
+
+    String note;
     LocalDate created_at;
-    LocalDate deleted_at;
 }

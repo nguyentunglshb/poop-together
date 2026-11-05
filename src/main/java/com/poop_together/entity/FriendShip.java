@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.poop_together.enums.FriendshipStatus;
+import com.poop_together.enums.FriendShipStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -38,7 +38,7 @@ public class FriendShip {
     String addressee_id;
 
     @Enumerated (EnumType.STRING)
-    FriendshipStatus status;
+    FriendShipStatus status;
     
     @CreationTimestamp
     @Column(updatable = false)

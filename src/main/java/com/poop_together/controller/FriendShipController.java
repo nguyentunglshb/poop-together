@@ -10,14 +10,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.poop_together.dto.ApiResponse;
-import com.poop_together.dto.request.friendship.SendFriendRequestDto;
-import com.poop_together.dto.response.friendship.FriendShipResponse;
+import com.poop_together.dto.request.friendShip.SendFriendRequestDto;
+import com.poop_together.dto.request.friendShip.UpdateStatusRequestDto;
+import com.poop_together.dto.response.friendShip.FriendShipResponse;
+import com.poop_together.dto.response.friendShip.ReceivedFriendRequestResponse;
+import com.poop_together.dto.response.friendShip.SentFriendRequestResponse;
 import com.poop_together.service.FriendShipService;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController 
@@ -42,16 +44,23 @@ public class FriendShipController {
     }
 
     @GetMapping("/sent")
-    ApiResponse<List<FriendShipResponse>> getSentFriendRequests() {
-        return ApiResponse.<List<FriendShipResponse>>builder()
+    ApiResponse<List<SentFriendRequestResponse>> getSentFriendRequests() {
+        return ApiResponse.<List<SentFriendRequestResponse>>builder()
                 .result(friendShipService.getSentFriendRequests())
                 .build();
     }
 
     @GetMapping("/received")
-    ApiResponse<List<FriendShipResponse>> getReceivedFriendRequests() {
-        return ApiResponse.<List<FriendShipResponse>>builder()
+    ApiResponse<List<ReceivedFriendRequestResponse>> getReceivedFriendRequests() {
+        return ApiResponse.<List<ReceivedFriendRequestResponse>>builder()
                 .result(friendShipService.getReceivedFriendRequests())
+                .build();
+    }
+
+    @PostMapping ("/update-status")
+    ApiResponse<FriendShipResponse> updateFriendRequestStatus(@RequestBody UpdateStatusRequestDto req) {
+        return ApiResponse.<FriendShipResponse>builder()
+                .result(friendShipService.updateFriendRequestStatus(req))
                 .build();
     }
     

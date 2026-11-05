@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.poop_together.entity.FriendShip;
+import com.poop_together.enums.FriendShipStatus;
 
 @Repository 
 public interface FriendShipRepository extends JpaRepository<FriendShip, String> {
@@ -18,9 +19,9 @@ public interface FriendShipRepository extends JpaRepository<FriendShip, String> 
     """)
     boolean existsByRequesterIdAndAddresseeId(String requesterId, String addresseeId);
 
-    @Query("select f from FriendShip f where f.requester_id = :requesterId")
-    List<FriendShip> findByRequesterId(String requesterId);
+    @Query("select f from FriendShip f where f.requester_id = :requesterId and f.status = :status order by f.created_at desc")
+    List<FriendShip> findByRequesterIdAndStatusOrderByCreatedAtDesc(String requesterId, FriendShipStatus status);
 
-    @Query("select f from FriendShip f where f.addressee_id = :addresseeId")
-    List<FriendShip> findByAddresseeId(String addresseeId);
+    @Query("select f from FriendShip f where f.addressee_id = :addresseeId and f.status = :status order by f.created_at desc")
+    List<FriendShip> findByAddresseeIdAndStatusOrderByCreatedAtDesc(String addresseeId, FriendShipStatus status);
 }

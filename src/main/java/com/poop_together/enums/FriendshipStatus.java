@@ -1,6 +1,6 @@
 package com.poop_together.enums;
 
-public enum FriendshipStatus {
+public enum FriendShipStatus {
     PENDING,
     ACCEPTED,
     REJECTED,

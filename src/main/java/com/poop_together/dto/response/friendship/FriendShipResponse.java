@@ -1,8 +1,8 @@
-package com.poop_together.dto.response.friendship;
+package com.poop_together.dto.response.friendShip;
 
 import java.time.LocalDate;
 
-import com.poop_together.enums.FriendshipStatus;
+import com.poop_together.enums.FriendShipStatus;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -22,5 +22,5 @@ public class FriendShipResponse {
     String addressee_id;
     LocalDate created_at;
     LocalDate responded_at;
-    FriendshipStatus status;
+    FriendShipStatus status;
 }

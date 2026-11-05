@@ -1,4 +1,4 @@
-package com.poop_together.dto.request.friendship;
+package com.poop_together.dto.request.friendShip;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

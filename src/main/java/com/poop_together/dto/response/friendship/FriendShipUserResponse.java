@@ -15,6 +15,6 @@ import lombok.experimental.FieldDefaults;
 public class FriendShipUserResponse {
     String id;
     String username;
-    String display_name;
-    String avatar_url;
+    String displayName;
+    String avatarUrl;
 }

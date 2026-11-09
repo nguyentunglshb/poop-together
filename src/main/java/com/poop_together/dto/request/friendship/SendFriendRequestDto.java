@@ -15,5 +15,5 @@ import lombok.experimental.FieldDefaults;
 public class SendFriendRequestDto {
     String id;
 
-    String addressee_id;
+    String addresseeId;
 }

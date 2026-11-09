@@ -17,8 +17,8 @@ import lombok.experimental.FieldDefaults;
 public class ReceivedFriendRequestResponse {
     String id;
     FriendShipUserResponse requester;
-    String created_at;
-    String responded_at;
+    String createdAt;
+    String respondedAt;
 
     FriendShipStatus status;
 }

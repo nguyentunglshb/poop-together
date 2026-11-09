@@ -2,8 +2,11 @@ package com.poop_together.entity;
 
 import java.time.LocalDate;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.poop_together.enums.NotificationType;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -28,13 +31,21 @@ public class Notification {
     @GeneratedValue (strategy = GenerationType.UUID)
     String id;
 
-    String user_id;
+    @Column (name = "user_id")
+    String userId;
     
     @Enumerated (EnumType.STRING)
     NotificationType type;
     
-    String actor_id;
+    @Column (name = "actor_id")
+    String actorId;
+
     String payload;
-    Boolean is_read;
-    LocalDate created_at;
+
+    @Column (name = "is_read")
+    Boolean isRead;
+
+    @CreationTimestamp 
+    @Column (name = "created_at")
+    LocalDate createdAt;
 }

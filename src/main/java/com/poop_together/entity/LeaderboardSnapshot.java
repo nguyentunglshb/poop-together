@@ -2,8 +2,11 @@ package com.poop_together.entity;
 
 import java.time.LocalDate;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.poop_together.enums.LeaderboardPeriod;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -31,9 +34,19 @@ public class LeaderboardSnapshot {
     @Enumerated (EnumType.STRING)
     LeaderboardPeriod period;
     
-    LocalDate period_start;
-    String user_id;
+    @CreationTimestamp 
+    @Column (name = "period_start", updatable = false)
+    LocalDate periodStart;
+
+    @Column (name = "user_id")
+    String userId;
+
     Number rank;
-    Number total_seconds;
-    LocalDate created_at;
+    
+    @Column(name = "total_seconds") 
+    Number totalSeconds;
+
+    @CreationTimestamp 
+    @Column (name = "created_at", updatable = false)
+    LocalDate createdAt;
 }

@@ -22,6 +22,6 @@ public class CreateUserDto {
     @Size (min = 8, message = "PASSWORD_INVALID")
     String password;
 
-    String display_name;
-    String avatar_url;
+    String displayName;
+    String avatarUrl;
 }

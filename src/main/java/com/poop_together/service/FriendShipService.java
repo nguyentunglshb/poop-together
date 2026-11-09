@@ -41,16 +41,16 @@ public class FriendShipService {
     public FriendShipResponse sendFriendRequest(SendFriendRequestDto req) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String requesterId = userRepository.findByUsername(auth.getName()).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)).getId();
-        if(requesterId.equals(req.getAddressee_id())) {
+        if(requesterId.equals(req.getAddresseeId())) {
             throw new AppException(ErrorCode.FRIEND_REQUEST_SELF);
         }
-        if (friendShipRepository.existsByRequesterIdAndAddresseeId(requesterId, req.getAddressee_id()) || friendShipRepository.existsByRequesterIdAndAddresseeId(req.getAddressee_id(), requesterId)) {
+        if (friendShipRepository.existsByRequesterIdAndAddresseeId(requesterId, req.getAddresseeId()) || friendShipRepository.existsByRequesterIdAndAddresseeId(req.getAddresseeId(), requesterId)) {
             throw new AppException(ErrorCode.FRIEND_REQUEST_ALREADY_SENT);
         }
 
         // Create and save the friend request
             FriendShip friendRequest = friendShipMapper.toFriendShip(req);
-            friendRequest.setRequester_id(requesterId);
+            friendRequest.setRequesterId(requesterId);
             friendRequest.setStatus(FriendShipStatus.PENDING);
             return friendShipMapper.toFriendShipResponse(friendShipRepository.save(friendRequest));
     }
@@ -63,7 +63,7 @@ public class FriendShipService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String requesterId = userRepository.findByUsername(auth.getName()).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)).getId();
         List<FriendShip> sentRequests = friendShipRepository.findByRequesterIdAndStatusOrderByCreatedAtDesc(requesterId, FriendShipStatus.PENDING);
-        Map<String, User> users = loadUsers(sentRequests, FriendShip::getAddressee_id);
+        Map<String, User> users = loadUsers(sentRequests, FriendShip::getAddresseeId);
         return sentRequests.stream()
                     .map(f -> {
                         SentFriendRequestResponse response =
@@ -71,7 +71,7 @@ public class FriendShipService {
 
                         response.setAddressee(
                             friendShipMapper.toFriendShipUserResponse(
-                                users.get(f.getAddressee_id())));
+                                users.get(f.getAddresseeId())));
 
                         return response;
                     })
@@ -82,11 +82,11 @@ public class FriendShipService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String addresseeId = userRepository.findByUsername(auth.getName()).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)).getId();
         List<FriendShip> receivedRequests = friendShipRepository.findByAddresseeIdAndStatusOrderByCreatedAtDesc(addresseeId, FriendShipStatus.PENDING);
-        Map<String, User> users = loadUsers(receivedRequests, FriendShip::getRequester_id);
+        Map<String, User> users = loadUsers(receivedRequests, FriendShip::getRequesterId);
         return receivedRequests.stream()
                     .map(f -> {
                         ReceivedFriendRequestResponse response = friendShipMapper.toReceivedFriendRequestResponse(f);
-                        response.setRequester(friendShipMapper.toFriendShipUserResponse(users.get(f.getRequester_id())));
+                        response.setRequester(friendShipMapper.toFriendShipUserResponse(users.get(f.getRequesterId())));
                         return response;
                     })
                     .toList();
@@ -97,7 +97,7 @@ public class FriendShipService {
         String addresseeId = userRepository.findByUsername(auth.getName()).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)).getId();
         FriendShip friendRequest = friendShipRepository.findById(req.getId())
                 .orElseThrow(() -> new AppException(ErrorCode.FRIEND_REQUEST_NOT_FOUND));
-        if (!friendRequest.getAddressee_id().equals(addresseeId)) {
+        if (!friendRequest.getAddresseeId().equals(addresseeId)) {
             throw new AppException(ErrorCode.FRIEND_REQUEST_NOT_AUTHORIZED);
         }
         if (friendRequest.getStatus() != FriendShipStatus.PENDING) {

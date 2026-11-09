@@ -29,19 +29,32 @@ public class User {
     @Id 
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
+
     String username;
-    String password_hash;
-    String display_name;
-    String avatar_url;
+
+    @Column (name = "password_hash") 
+    String passwordHash;
+
+    @Column (name = "display_name")
+    String displayName;
+
+    @Column (name = "avatar_url")
+    String avatarUrl;
+
     String timezone;
-    LocalDate last_seen_at;
-    Boolean is_active;
+
+    @Column (name = "last_seen_at")
+    LocalDate lastSeenAt;
+
+    @Column (name = "is_active")
+    Boolean isActive = true;
 
     @CreationTimestamp
-    @Column(updatable = false)
-    LocalDateTime created_at;
+    @Column(name = "created_at", updatable = false)
+    LocalDateTime createdAt;
 
     @UpdateTimestamp
-    LocalDateTime updated_at;
+    @Column (name = "updated_at")
+    LocalDateTime updatedAt;
     Set<String> roles;
 }

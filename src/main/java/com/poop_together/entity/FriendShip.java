@@ -34,16 +34,20 @@ public class FriendShip {
     @GeneratedValue (strategy = GenerationType.UUID)
     String id;
     
-    String requester_id;
-    String addressee_id;
+    @Column (name = "requester_id")
+    String requesterId;
+
+    @Column (name = "addressee_id")
+    String addresseeId;
 
     @Enumerated (EnumType.STRING)
     FriendShipStatus status;
     
     @CreationTimestamp
-    @Column(updatable = false)
-    LocalDateTime created_at;
+    @Column(updatable = false, name = "created_at")
+    LocalDateTime createdAt;
 
     @UpdateTimestamp
-    LocalDateTime responded_at;
+    @Column (name = "responded_at")
+    LocalDateTime respondedAt;
 }

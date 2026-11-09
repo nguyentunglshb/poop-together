@@ -19,8 +19,8 @@ import lombok.experimental.FieldDefaults;
 public class SentFriendRequestResponse {
     String id;
     FriendShipUserResponse addressee;
-    LocalDate created_at;
-    LocalDate responded_at;
+    LocalDate createdAt;
+    LocalDate respondedAt;
 
     FriendShipStatus status;
 }

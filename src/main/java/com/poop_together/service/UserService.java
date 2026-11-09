@@ -31,7 +31,7 @@ public class UserService {
         }
 
         User user = userMapper.toUser(req);
-        user.setPassword_hash(passwordEncoder.encode(req.getPassword()));
+        user.setPasswordHash(passwordEncoder.encode(req.getPassword()));
 
         return userMapper.toUserResponse(userRepository.save(user));
     }

@@ -1,10 +1,16 @@
 package com.poop_together.entity;
 
+import java.time.Instant;
 import java.time.LocalDate;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.CurrentTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.poop_together.enums.SessionStatus;
 import com.poop_together.enums.StopReason;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -29,17 +35,26 @@ public class PoopSession {
     @GeneratedValue (strategy = GenerationType.UUID)
     String id;
     
-    String user_id;
-    LocalDate started_at;
-    LocalDate ended_at;
-    Integer duration_seconds;
+    @Column (name = "user_id")
+    String userId;
+
+    @CreationTimestamp 
+    @Column (name = "started_at")
+    Instant startedAt;
+
+    @UpdateTimestamp 
+    @Column (name = "updated_at")
+    Instant updatedAt;
+
+    @Column (name = "duration_seconds")
+    Integer durationSeconds;
     
     @Enumerated (EnumType.STRING)
     SessionStatus status;
 
     @Enumerated (EnumType.STRING)
-    StopReason stop_reason;
+    @Column (name = "stop_reason")
+    StopReason stopReason;
 
     String note;
-    LocalDate created_at;
 }

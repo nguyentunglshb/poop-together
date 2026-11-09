@@ -2,8 +2,11 @@ package com.poop_together.entity;
 
 import java.time.LocalDate;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.poop_together.enums.ConversationType;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -31,5 +34,7 @@ public class Conversation {
     @Enumerated (EnumType.STRING)
     ConversationType type;
 
-    LocalDate created_at;
+    @CreationTimestamp 
+    @Column (name = "created_at", updatable = false)
+    LocalDate createdAt;
 }

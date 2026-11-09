@@ -18,9 +18,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults (level = AccessLevel.PRIVATE)
 public class FriendShipResponse {
     String id;
-    String requester_id;
-    String addressee_id;
-    LocalDate created_at;
-    LocalDate responded_at;
+    String requesterId;
+    String addresseeId;
+    LocalDate createdAt;
+    LocalDate respondedAt;
     FriendShipStatus status;
 }

@@ -18,11 +18,11 @@ import lombok.experimental.FieldDefaults;
 public class UserResponse {
     String id;
     String username;
-    String display_name;
-    String avatar_url;
+    String displayName;
+    String avatarUrl;
     String timezone;
-    LocalDate last_seen_at;
-    Boolean is_active;
-    LocalDateTime created_at;
-    LocalDateTime updated_at;
+    LocalDate lastSeenAt;
+    Boolean isActive;
+    LocalDateTime createdAt;
+    LocalDateTime updatedAt;
 }

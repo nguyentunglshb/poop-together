@@ -2,6 +2,9 @@ package com.poop_together.entity;
 
 import java.time.LocalDate;
 
+import org.hibernate.annotations.UpdateTimestamp;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,9 +28,19 @@ public class UserDailyStat {
     @GeneratedValue (strategy = GenerationType.UUID)
     String id;
 
-    String user_id;
-    LocalDate stat_date;
-    Number total_second;
-    Number session_count;
-    LocalDate updated_at;
+    @Column (name = "user_id")
+    String userId;
+
+    @Column (name = "stat_date")
+    LocalDate statDate;
+
+    @Column (name = "total_seconds")
+    Number totalSeconds;
+
+    @Column (name = "session_count")
+    Number sessionCount;
+
+    @UpdateTimestamp 
+    @Column (name = "updated_at")
+    LocalDate updatedAt;
 }

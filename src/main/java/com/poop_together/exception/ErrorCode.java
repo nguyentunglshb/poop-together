@@ -21,6 +21,7 @@ public enum ErrorCode {
     FRIEND_REQUEST_ALREADY_SENT(400, "Friend request already sent or received"),
     FRIEND_REQUEST_NOT_AUTHORIZED(403, "Not authorized to change the status of this friend request"),
     FRIEND_REQUEST_ALREADY_RESPONDED(400, "Friend request has already been responded to"),
+    SESSION_ALREADY_ACTIVE(400, "Session already active")
     ;
 
     int code;

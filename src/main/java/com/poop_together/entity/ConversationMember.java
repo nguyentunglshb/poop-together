@@ -2,6 +2,9 @@ package com.poop_together.entity;
 
 import java.time.LocalDate;
 
+import org.hibernate.annotations.CreationTimestamp;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,8 +28,16 @@ public class ConversationMember {
     @GeneratedValue (strategy = GenerationType.UUID)
     String id;
 
-    String conversation_id;
-    String user_id;
-    String last_read_message_id;
-    LocalDate joined_at;
+    @Column (name = "conversation_id")
+    String conversationId;
+
+    @Column (name = "user_id")
+    String userId;
+
+    @Column (name = "last_read_message_id")
+    String lastReadMessageId;
+    
+    @CreationTimestamp 
+    @Column (name = "joined_at", updatable = true)
+    LocalDate joinedAt;
 }

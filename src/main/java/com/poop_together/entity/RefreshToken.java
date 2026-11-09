@@ -2,6 +2,9 @@ package com.poop_together.entity;
 
 import java.time.LocalDate;
 
+import org.hibernate.annotations.CreationTimestamp;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,9 +26,20 @@ public class RefreshToken {
     @Id 
     @GeneratedValue (strategy = GenerationType.UUID)
     String id;
-    String user_id;
-    String token_hash;
-    LocalDate expires_at;
-    LocalDate revoked_at;
-    LocalDate created_at;
+
+    @Column (name = "user_id")
+    String userId;
+
+    @Column (name = "token_hash")
+    String tokenHash;
+
+    @Column (name = "expires_at")
+    LocalDate expiresAt;
+
+    @Column (name = "revoked_at")
+    LocalDate revokedAt;
+
+    @CreationTimestamp 
+    @Column (name = "created_at")
+    LocalDate createdAt;
 }

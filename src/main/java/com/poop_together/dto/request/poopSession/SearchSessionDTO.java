@@ -1,10 +1,14 @@
 package com.poop_together.dto.request.poopSession;
 
+import java.time.LocalDate;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.poop_together.enums.SessionStatus;
 
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -36,7 +40,18 @@ public class SearchSessionDTO implements Pageable {
 
     SessionStatus status;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    LocalDate from;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    LocalDate to;
+
     Sort sort;
+
+    @AssertTrue(message = "from must be on or before to")
+    public boolean isDateRangeValid() {
+        return from == null || to == null || !from.isAfter(to);
+    }
 
     @Override
     public long getOffset() {

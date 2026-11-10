@@ -1,5 +1,7 @@
 package com.poop_together.mapper;
 
+import java.util.List;
+
 import org.mapstruct.Mapper;
 
 import com.poop_together.dto.response.poopSession.PoopSessionResponse;
@@ -8,4 +10,6 @@ import com.poop_together.entity.PoopSession;
 @Mapper (componentModel = "spring")
 public interface PoopSessionMapper {
     PoopSessionResponse toPoopSessionResponse(PoopSession req);
+
+    List<PoopSessionResponse> tPoopSessionResponses(List<PoopSession> sessions);
 }

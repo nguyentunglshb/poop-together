@@ -4,16 +4,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.poop_together.dto.ApiResponse;
+import com.poop_together.dto.request.poopSession.SearchSessionDTO;
 import com.poop_together.dto.response.poopSession.PoopSessionResponse;
+import com.poop_together.entity.PoopSession;
 import com.poop_together.service.PoopSessionService;
 
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 
 
@@ -33,18 +36,27 @@ public class PoopSessionController {
     }
 
     @PostMapping("/stop")
-    public void  stopSession(@RequestBody String entity) {
-        //TODO: process POST request
+    ApiResponse<PoopSessionResponse> stopSession() {
+        return ApiResponse
+                .<PoopSessionResponse>builder()
+                .result(poopSessionService.stopSession())
+                .build();
     }
 
     @GetMapping("/current")
-    public String getCurrentSession(@RequestParam String param) {
-        return new String();
+    ApiResponse<PoopSessionResponse> getCurrentSession() {
+        return ApiResponse
+                .<PoopSessionResponse>builder()
+                .result(poopSessionService.getCurrentSession())
+                .build();
     }
 
     @GetMapping()
-    public String getSessions(@RequestParam String param) {
-        return new String();
+    ApiResponse<Page<PoopSession>> getSessions(@Valid @ModelAttribute SearchSessionDTO searchSessionDto) {
+        return ApiResponse
+                .<Page<PoopSession>>builder()
+                .result(poopSessionService.getSessions(searchSessionDto))
+                .build();
     }
     
     

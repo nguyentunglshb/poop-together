@@ -1,12 +1,18 @@
 package com.poop_together.service;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -22,6 +28,7 @@ import com.poop_together.mapper.PoopSessionMapper;
 import com.poop_together.repository.PoopSessionRepository;
 import com.poop_together.repository.UserRepository;
 
+import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +38,8 @@ import lombok.experimental.FieldDefaults;
 @RequiredArgsConstructor 
 @FieldDefaults (level = AccessLevel.PRIVATE, makeFinal = true)
 public class PoopSessionService {
+    private static final ZoneId SESSION_TIME_ZONE = ZoneId.of("Asia/Bangkok");
+
     PoopSessionRepository poopSessionRepository;
     PoopSessionMapper poopSessionMapper;
     UserRepository userRepository;
@@ -94,6 +103,12 @@ public class PoopSessionService {
     }
 
     public Page<PoopSession> getSessions(SearchSessionDTO searchSessionDto) {
+        LocalDate from = searchSessionDto.getFrom();
+        LocalDate to = searchSessionDto.getTo();
+        if (from != null && to != null && from.isAfter(to)) {
+            throw new AppException(ErrorCode.INPUT_NOT_VALID);
+        }
+
         String sortProperty = Arrays.stream(SortBySession.values())
                 .filter(sortBy -> sortBy.getValue().equals(searchSessionDto.getSortBy()))
                 .map(SortBySession::getProperty)
@@ -110,11 +125,23 @@ public class PoopSessionService {
             sort
         );
         SessionStatus status = searchSessionDto.getStatus();
-        if (status == null) {
-            return poopSessionRepository.findAll(pageable);
-        }
+        Specification<PoopSession> filters = (root, query, builder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            if (status != null) {
+                predicates.add(builder.equal(root.get("status"), status));
+            }
+            if (from != null) {
+                predicates.add(builder.greaterThanOrEqualTo(root.<Instant>get("startedAt"),
+                        from.atStartOfDay(SESSION_TIME_ZONE).toInstant()));
+            }
+            if (to != null) {
+                predicates.add(builder.lessThan(root.<Instant>get("startedAt"),
+                        to.plusDays(1).atStartOfDay(SESSION_TIME_ZONE).toInstant()));
+            }
+            return builder.and(predicates.toArray(Predicate[]::new));
+        };
 
-        return poopSessionRepository.findByStatus(status, pageable);
+        return poopSessionRepository.findAll(filters, pageable);
 
     }
 }

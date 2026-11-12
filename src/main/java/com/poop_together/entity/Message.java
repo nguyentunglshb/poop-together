@@ -1,6 +1,6 @@
 package com.poop_together.entity;
 
-import java.time.LocalDate;
+import java.time.Instant;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -35,12 +35,21 @@ public class Message {
     String senderId;
 
     String text;
+
+    @Column (name = "reply_to_id")
+    String replyToId;
+
+    @Column (name = "forwarded_from_id")
+    String forwardedFromId;
+
+    @Column (name = "client_id")
+    String clientId;
     
     @CreationTimestamp 
     @Column (name = "created_at", updatable = false) 
-    LocalDate createdAt;
+    Instant createdAt;
     
     @UpdateTimestamp 
     @Column (name = "recalled_at", updatable = false)
-    LocalDate recalledAt;
+    Instant recalledAt;
 }

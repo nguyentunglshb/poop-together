@@ -2,8 +2,8 @@ package com.poop_together.service;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,7 +39,7 @@ import lombok.experimental.FieldDefaults;
 @RequiredArgsConstructor 
 @FieldDefaults (level = AccessLevel.PRIVATE, makeFinal = true)
 public class PoopSessionService {
-    static ZoneId SESSION_TIME_ZONE = ZoneId.of("Asia/Bangkok");
+    public static final ZoneId SESSION_TIME_ZONE = ZoneId.of("Asia/Bangkok");
 
     PoopSessionRepository poopSessionRepository;
     PoopSessionMapper poopSessionMapper;
@@ -118,8 +118,8 @@ public class PoopSessionService {
     }
 
     public Page<PoopSession> getSessions(SearchSessionDTO searchSessionDto) {
-        LocalDate from = searchSessionDto.getFrom();
-        LocalDate to = searchSessionDto.getTo();
+        Instant from = searchSessionDto.getFrom();
+        Instant to = searchSessionDto.getTo();
         if (from != null && to != null && from.isAfter(to)) {
             throw new AppException(ErrorCode.INPUT_NOT_VALID);
         }
@@ -146,12 +146,11 @@ public class PoopSessionService {
                 predicates.add(builder.equal(root.get("status"), status));
             }
             if (from != null) {
-                predicates.add(builder.greaterThanOrEqualTo(root.<Instant>get("startedAt"),
-                        from.atStartOfDay(SESSION_TIME_ZONE).toInstant()));
+                predicates.add(builder.greaterThanOrEqualTo(root.<Instant>get("startedAt"), from));
             }
             if (to != null) {
                 predicates.add(builder.lessThan(root.<Instant>get("startedAt"),
-                        to.plusDays(1).atStartOfDay(SESSION_TIME_ZONE).toInstant()));
+                        to.atZone(SESSION_TIME_ZONE).plusDays(1).truncatedTo(ChronoUnit.DAYS).toInstant()));
             }
             return builder.and(predicates.toArray(Predicate[]::new));
         };

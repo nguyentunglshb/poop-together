@@ -1,7 +1,6 @@
 package com.poop_together.entity;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -45,9 +44,9 @@ public class FriendShip {
     
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
-    LocalDateTime createdAt;
+    Instant createdAt;
 
     @UpdateTimestamp
     @Column (name = "responded_at")
-    LocalDateTime respondedAt;
+    Instant respondedAt;
 }

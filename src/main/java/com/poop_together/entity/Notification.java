@@ -1,6 +1,6 @@
 package com.poop_together.entity;
 
-import java.time.LocalDate;
+import java.time.Instant;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -47,5 +47,5 @@ public class Notification {
 
     @CreationTimestamp 
     @Column (name = "created_at")
-    LocalDate createdAt;
+    Instant createdAt;
 }

@@ -17,6 +17,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -26,6 +27,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor 
 @FieldDefaults (level = AccessLevel.PRIVATE)
 @Entity 
+@Builder 
 @Table (name = "conversations")
 public class Conversation {
     @Id 
@@ -35,14 +37,17 @@ public class Conversation {
     @Enumerated (EnumType.STRING)
     ConversationType type;
 
+    @Column(name = "direct_key", length = 80, unique = true)
+    String directKey; // only DIRECT
+
     @CreationTimestamp 
     @Column (name = "created_at", updatable = false)
     Instant createdAt;
 
-    String name;
+    String name;  // only GROUP
 
     @Column (name = "avatar_url")
-    String avatarUrl;
+    String avatarUrl; // only GROUP
 
     @Column (name = "created_by")
     String createdBy;

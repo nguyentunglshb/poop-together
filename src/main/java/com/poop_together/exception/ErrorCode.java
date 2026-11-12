@@ -35,6 +35,7 @@ public enum ErrorCode {
     NOT_FRIENDS(403, "You are not friends with this user"),
     NOT_CONVERSATION_MEMBER(403, "You are not a member of this conversation"),
     MESSAGE_INVALID(400, "Message is invalid"),
+    CONVERSATION_WITH_SELF(400, "Cannot create a conversation with yourself")
     ;
 
     int code;

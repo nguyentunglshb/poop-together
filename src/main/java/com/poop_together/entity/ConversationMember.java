@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -21,6 +22,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor 
 @FieldDefaults (level = AccessLevel.PRIVATE)
 @Entity 
+@Builder 
 @Table (name = "conversation_members")
 public class ConversationMember {
     

@@ -1,6 +1,6 @@
 package com.poop_together.entity;
 
-import java.time.LocalDate;
+import java.time.Instant;
 
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -34,7 +34,7 @@ public class UserDailyStats {
     String userId;
 
     @Column (name = "stat_date", nullable = false)
-    LocalDate statDate;
+    Instant statDate;
 
     @Column(name = "total_seconds", nullable = false)
     long totalSeconds = 0;
@@ -44,5 +44,5 @@ public class UserDailyStats {
 
     @UpdateTimestamp 
     @Column (name = "updated_at")
-    LocalDate updatedAt;
+    Instant updatedAt;
 }

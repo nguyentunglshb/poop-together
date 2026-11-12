@@ -1,7 +1,6 @@
 package com.poop_together.dto.response;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -21,8 +20,8 @@ public class UserResponse {
     String displayName;
     String avatarUrl;
     String timezone;
-    LocalDate lastSeenAt;
+    Instant lastSeenAt;
     Boolean isActive;
-    LocalDateTime createdAt;
-    LocalDateTime updatedAt;
+    Instant createdAt;
+    Instant updatedAt;
 }

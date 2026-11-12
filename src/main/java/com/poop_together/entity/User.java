@@ -1,7 +1,6 @@
 package com.poop_together.entity;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -44,17 +43,17 @@ public class User {
     String timezone;
 
     @Column (name = "last_seen_at")
-    LocalDate lastSeenAt;
+    Instant lastSeenAt;
 
     @Column (name = "is_active")
     Boolean isActive = true;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    LocalDateTime createdAt;
+    Instant createdAt;
 
     @UpdateTimestamp
     @Column (name = "updated_at")
-    LocalDateTime updatedAt;
+    Instant updatedAt;
     Set<String> roles;
 }

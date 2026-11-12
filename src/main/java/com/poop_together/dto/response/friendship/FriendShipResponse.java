@@ -1,6 +1,6 @@
 package com.poop_together.dto.response.friendShip;
 
-import java.time.LocalDate;
+import java.time.Instant;
 
 import com.poop_together.enums.FriendShipStatus;
 
@@ -20,7 +20,7 @@ public class FriendShipResponse {
     String id;
     String requesterId;
     String addresseeId;
-    LocalDate createdAt;
-    LocalDate respondedAt;
+    Instant createdAt;
+    Instant respondedAt;
     FriendShipStatus status;
 }

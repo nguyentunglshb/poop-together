@@ -1,5 +1,6 @@
 package com.poop_together.service;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -38,11 +39,12 @@ import lombok.experimental.FieldDefaults;
 @RequiredArgsConstructor 
 @FieldDefaults (level = AccessLevel.PRIVATE, makeFinal = true)
 public class PoopSessionService {
-    private static final ZoneId SESSION_TIME_ZONE = ZoneId.of("Asia/Bangkok");
+    static ZoneId SESSION_TIME_ZONE = ZoneId.of("Asia/Bangkok");
 
     PoopSessionRepository poopSessionRepository;
     PoopSessionMapper poopSessionMapper;
     UserRepository userRepository;
+    UserDailyStatsService userDailyStatsService;
 
     @Transactional 
     public PoopSessionResponse startSession() {
@@ -75,12 +77,25 @@ public class PoopSessionService {
             throw new AppException(ErrorCode.SESSION_NOT_ACTIVE);
         }
 
-        PoopSession poopSession = poopSessionOptional.get();
-        poopSession.setStatus(SessionStatus.COMPLETED);
+        // PoopSession poopSession = poopSessionOptional.get();
+        // poopSession.setStatus(SessionStatus.COMPLETED);
 
-        long durationSeconds = (System.currentTimeMillis() - poopSession.getStartedAt().toEpochMilli()) / 1000;
-        poopSession.setDurationSeconds((int) durationSeconds);
-        return poopSessionMapper.toPoopSessionResponse(poopSessionRepository.saveAndFlush(poopSession));
+        // long durationSeconds = (System.currentTimeMillis() - poopSession.getStartedAt().toEpochMilli()) / 1000;
+        // poopSession.setDurationSeconds((int) durationSeconds);
+        // return poopSessionMapper.toPoopSessionResponse(poopSessionRepository.saveAndFlush(poopSession));
+
+        return finishSession(poopSessionOptional.get(), SessionStatus.COMPLETED, Instant.now());
+    }
+
+    public PoopSessionResponse finishSession(PoopSession poopSession, SessionStatus status, Instant endedAt) {
+        long seconds = Math.max(0, Duration.between(poopSession.getStartedAt(), endedAt).getSeconds());
+        
+        poopSession.setStatus(status);
+        poopSession.setDurationSeconds((int)seconds);
+
+        userDailyStatsService.addSession(poopSession);
+
+        return poopSessionMapper.toPoopSessionResponse(poopSessionRepository.save(poopSession));
     }
 
     public PoopSessionResponse getCurrentSession() {

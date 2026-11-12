@@ -1,10 +1,8 @@
 package com.poop_together.entity;
 
 import java.time.Instant;
-import java.time.LocalDate;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.poop_together.enums.SessionStatus;

@@ -1,5 +1,6 @@
 package com.poop_together.entity;
 
+import java.time.Instant;
 import java.time.LocalDate;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -34,8 +35,8 @@ public class ConversationMember {
     @Column (name = "user_id")
     String userId;
 
-    @Column (name = "last_read_message_id")
-    String lastReadMessageId;
+    @Column (name = "last_read_at")
+    Instant lastReadAt;
     
     @CreationTimestamp 
     @Column (name = "joined_at", updatable = true)

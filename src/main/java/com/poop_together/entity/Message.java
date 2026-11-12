@@ -34,13 +34,13 @@ public class Message {
     @Column (name = "sender_id")
     String senderId;
 
-    String content;
+    String text;
     
     @CreationTimestamp 
     @Column (name = "created_at", updatable = false) 
     LocalDate createdAt;
     
     @UpdateTimestamp 
-    @Column (name = "deleted_at", updatable = false)
-    LocalDate deletedAt;
+    @Column (name = "recalled_at", updatable = false)
+    LocalDate recalledAt;
 }

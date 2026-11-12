@@ -1,8 +1,9 @@
 package com.poop_together.entity;
 
-import java.time.LocalDate;
+import java.time.Instant;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.poop_together.enums.ConversationType;
 
@@ -36,5 +37,20 @@ public class Conversation {
 
     @CreationTimestamp 
     @Column (name = "created_at", updatable = false)
-    LocalDate createdAt;
+    Instant createdAt;
+
+    String name;
+
+    @Column (name = "avatar_url")
+    String avatarUrl;
+
+    @Column (name = "created_by")
+    String createdBy;
+
+    @Column (name = "last_message_at")
+    Instant lastMessageAt;
+
+    @UpdateTimestamp 
+    @Column (name = "updated_at")
+    Instant updatedAt;
 }

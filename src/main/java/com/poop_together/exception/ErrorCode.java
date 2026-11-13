@@ -4,8 +4,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
-@Getter 
-@FieldDefaults (level = AccessLevel.PRIVATE, makeFinal = true)
+@Getter
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION(500, "Internal server error"),
     KEY_INVALID(400, "Invalid message key"),
@@ -16,6 +16,7 @@ public enum ErrorCode {
     PASSWORD_INVALID(400, "Password must be at least 8 characters"),
     USER_NOT_EXISTED(404, "User does not exist"),
     UNAUTHENTICATED(401, "Unauthenticated"),
+    USER_NOT_FOUND(404, "User not found"),
 
     // Friend
     FRIEND_REQUEST_NOT_FOUND(404, "Friend request not found"),
@@ -35,8 +36,7 @@ public enum ErrorCode {
     NOT_FRIENDS(403, "You are not friends with this user"),
     NOT_CONVERSATION_MEMBER(403, "You are not a member of this conversation"),
     MESSAGE_INVALID(400, "Message is invalid"),
-    CONVERSATION_WITH_SELF(400, "Cannot create a conversation with yourself")
-    ;
+    CONVERSATION_WITH_SELF(400, "Cannot create a conversation with yourself");
 
     int code;
     String message;

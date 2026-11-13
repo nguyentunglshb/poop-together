@@ -22,40 +22,43 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-@Data 
-@NoArgsConstructor 
-@AllArgsConstructor 
-@FieldDefaults (level = AccessLevel.PRIVATE)
-@Entity 
-@Builder 
-@Table (name = "conversations")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Entity
+@Builder
+@Table(name = "conversations")
 public class Conversation {
-    @Id 
-    @GeneratedValue (strategy = GenerationType.UUID)
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
-    @Enumerated (EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     ConversationType type;
 
     @Column(name = "direct_key", length = 80, unique = true)
     String directKey; // only DIRECT
 
-    @CreationTimestamp 
-    @Column (name = "created_at", updatable = false)
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
     Instant createdAt;
 
-    String name;  // only GROUP
+    String name; // only GROUP
 
-    @Column (name = "avatar_url")
+    @Column(name = "avatar_url")
     String avatarUrl; // only GROUP
 
-    @Column (name = "created_by")
+    @Column(name = "created_by")
     String createdBy;
 
-    @Column (name = "last_message_at")
+    @Column(name = "last_message_at")
     Instant lastMessageAt;
 
-    @UpdateTimestamp 
-    @Column (name = "updated_at")
+    @Column(name = "last_message_id")
+    String lastMessageId;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
     Instant updatedAt;
 }

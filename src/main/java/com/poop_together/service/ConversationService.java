@@ -18,13 +18,11 @@ import com.poop_together.entity.Conversation;
 import com.poop_together.entity.ConversationMember;
 import com.poop_together.entity.User;
 import com.poop_together.enums.ConversationType;
-import com.poop_together.enums.FriendShipStatus;
 import com.poop_together.exception.AppException;
 import com.poop_together.exception.ErrorCode;
 import com.poop_together.mapper.ConversationMapper;
 import com.poop_together.repository.ConversationMemberRepository;
 import com.poop_together.repository.ConversationRepository;
-import com.poop_together.repository.FriendShipRepository;
 import com.poop_together.repository.UserRepository;
 
 import lombok.AccessLevel;
@@ -35,7 +33,7 @@ import lombok.experimental.FieldDefaults;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ConversationService {
-    private final FriendShipRepository friendShipRepository;
+    FriendShipChecker friendShipChecker;
     ConversationRepository conversationRepository;
     UserRepository userRepository;
     ConversationMapper conversationMapper;
@@ -54,7 +52,7 @@ public class ConversationService {
         User friend = userRepository.findById(directConversationRequestDto.getFriendId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
-        if (!areFriends(requesterId, directConversationRequestDto.getFriendId())) {
+        if (!friendShipChecker.areFriends(requesterId, directConversationRequestDto.getFriendId())) {
             throw new AppException(ErrorCode.NOT_FRIENDS);
         }
 
@@ -107,11 +105,6 @@ public class ConversationService {
             return conversationRepository.findByDirectKey(directKey)
                     .orElseThrow(() -> e);
         }
-    }
-
-    private boolean areFriends(String a, String b) {
-        return friendShipRepository.existsByRequesterIdAndAddresseeIdAndStatus(b, a, FriendShipStatus.ACCEPTED)
-                || friendShipRepository.existsByRequesterIdAndAddresseeIdAndStatus(a, b, FriendShipStatus.ACCEPTED);
     }
 
     static String buildDirectKey(String a, String b) {

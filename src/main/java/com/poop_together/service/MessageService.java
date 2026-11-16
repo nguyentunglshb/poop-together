@@ -83,16 +83,17 @@ public class MessageService {
                         : sendMessageRequestDto.getClientId())
                 .build();
 
-        messageRepository.save(message);
+        Message savedMessage = messageRepository.saveAndFlush(message);
 
         // Cập nhật tin cuối cùng để danh sách đoạn chat sắp xếp và hiển thị đúng
-        if (conversation.getLastMessageAt() == null) {
-            conversation.setLastMessageAt(message.getCreatedAt());
-            conversation.setLastMessageId(message.getId());
+        Instant createdAt = savedMessage.getCreatedAt();
+        if (conversation.getLastMessageAt() == null || !createdAt.isBefore(conversation.getLastMessageAt())) {
+            conversation.setLastMessageAt(createdAt);
+            conversation.setLastMessageId(savedMessage.getId());
             conversationRepository.save(conversation);
         }
 
-        return messageMapper.toMessageResponse(message);
+        return messageMapper.toMessageResponse(savedMessage);
     }
 
     @Transactional

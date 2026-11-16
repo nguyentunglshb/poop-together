@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.poop_together.dto.request.conversation.MessageHistoryRequestDto;
 import com.poop_together.dto.request.conversation.SendMessageRequestDto;
+import com.poop_together.dto.response.conversation.MessageCreatedEvent;
 import com.poop_together.dto.response.conversation.MessagePageResponse;
 import com.poop_together.dto.response.conversation.MessageResponse;
 import com.poop_together.entity.Conversation;
@@ -47,6 +49,7 @@ public class MessageService {
     MessageRepository messageRepository;
     FriendShipChecker friendShipChecker;
     MessageMapper messageMapper;
+    ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public MessageResponse send(String conversationId, SendMessageRequestDto sendMessageRequestDto) {
@@ -84,6 +87,9 @@ public class MessageService {
                 .build();
 
         Message savedMessage = messageRepository.saveAndFlush(message);
+
+        MessageResponse response = messageMapper.toMessageResponse(savedMessage);
+        eventPublisher.publishEvent(new MessageCreatedEvent(response));
 
         // Cập nhật tin cuối cùng để danh sách đoạn chat sắp xếp và hiển thị đúng
         Instant createdAt = savedMessage.getCreatedAt();

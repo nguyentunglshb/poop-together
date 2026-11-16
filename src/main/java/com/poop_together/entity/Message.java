@@ -45,15 +45,15 @@ public class Message {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private MessageType type = MessageType.TEXT;
+    MessageType type = MessageType.TEXT;
 
     @Column(columnDefinition = "text")
-    private String content;
+    String content;
 
     @Column(name = "client_id", length = 64)
-    private String clientId;
+    String clientId;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
+    Instant createdAt;
 }

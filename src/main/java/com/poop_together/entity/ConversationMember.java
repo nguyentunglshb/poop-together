@@ -4,6 +4,9 @@ import java.time.Instant;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,34 +20,34 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-@Data 
-@NoArgsConstructor 
-@AllArgsConstructor 
-@FieldDefaults (level = AccessLevel.PRIVATE)
-@Entity 
-@Builder 
-@Table (name = "conversation_members")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Entity
+@Builder
+@JsonInclude(Include.NON_NULL)
+@Table(name = "conversation_members")
 public class ConversationMember {
-    
-    @Id 
-    @GeneratedValue (strategy = GenerationType.UUID)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
-    @Column (name = "conversation_id")
+    @Column(name = "conversation_id")
     String conversationId;
 
-    @Column (name = "user_id")
+    @Column(name = "user_id")
     String userId;
 
-    @CreationTimestamp 
-    @Column (name = "joined_at", updatable = true)
+    @CreationTimestamp
+    @Column(name = "joined_at", updatable = true)
     Instant joinedAt;
 
-    @Column (name = "left_at")
+    @Column(name = "left_at")
     Instant leftAt;
 
-    @Column (name = "last_read_at")
+    @Column(name = "last_read_at")
     Instant lastReadAt;
-    
-    
+
 }

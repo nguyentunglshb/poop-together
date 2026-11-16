@@ -17,4 +17,9 @@ public interface MessageRepository extends JpaRepository<Message, String> {
     List<Message> findByConversationIdAndCreatedAtBeforeOrderByCreatedAtDescIdDesc(String conversationId,
             Instant before,
             Pageable pageable);
+
+    long countByConversationIdAndCreatedAtAndSenderIdNot(String conversationId, Instant createdAt, String senderId);
+
+    long countByConversationIdAndCreatedAtAfterAndSenderIdNot(
+            String conversationId, Instant readAt, String senderId);
 }

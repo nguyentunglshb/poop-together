@@ -1,12 +1,17 @@
 package com.poop_together.service;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.poop_together.dto.request.conversation.MessageHistoryRequestDto;
+import com.poop_together.dto.request.conversation.SendMessageRequestDto;
 import com.poop_together.dto.response.conversation.MessagePageResponse;
 import com.poop_together.dto.response.conversation.MessageResponse;
 import com.poop_together.entity.Conversation;
@@ -20,6 +25,7 @@ import com.poop_together.mapper.MessageMapper;
 import com.poop_together.repository.ConversationMemberRepository;
 import com.poop_together.repository.ConversationRepository;
 import com.poop_together.repository.MessageRepository;
+import com.poop_together.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -37,21 +43,27 @@ public class MessageService {
     ConversationAccessService accessService;
     ConversationRepository conversationRepository;
     ConversationMemberRepository memberRepository;
+    UserRepository userRepository;
     MessageRepository messageRepository;
     FriendShipChecker friendShipChecker;
     MessageMapper messageMapper;
 
     @Transactional
-    public MessageResponse send(String conversationId, String userId, String content, String clientId) {
+    public MessageResponse send(String conversationId, SendMessageRequestDto sendMessageRequestDto) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userId = userRepository.findByUsername(auth.getName())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND)).getId();
+
         Conversation conversation = accessService.getConversation(conversationId);
         accessService.assertActiveMember(conversationId, userId);
-        validateContent(content);
+        validateContent(sendMessageRequestDto.getContent());
         ensureStillFriends(conversation, userId);
 
         // Client gửi lại cùng client_id (mạng chập chờn, bấm hai lần): trả lại tin cũ,
         // không tạo mới
-        if (clientId != null && !clientId.isBlank()) {
-            Optional<Message> existing = messageRepository.findBySenderIdAndClientId(userId, clientId);
+        if (sendMessageRequestDto.getClientId() != null && !sendMessageRequestDto.getClientId().isBlank()) {
+            Optional<Message> existing = messageRepository.findBySenderIdAndClientId(userId,
+                    sendMessageRequestDto.getClientId());
             if (existing.isPresent()) {
                 if (!existing.get().getConversationId().equals(conversationId)) {
                     throw new AppException(ErrorCode.MESSAGE_INVALID);
@@ -65,8 +77,10 @@ public class MessageService {
                 .conversationId(conversationId)
                 .senderId(userId)
                 .type(MessageType.TEXT)
-                .content(content.strip())
-                .clientId(clientId == null || clientId.isBlank() ? null : clientId)
+                .content(sendMessageRequestDto.getContent().strip())
+                .clientId(sendMessageRequestDto.getClientId() == null || sendMessageRequestDto.getClientId().isBlank()
+                        ? null
+                        : sendMessageRequestDto.getClientId())
                 .build();
 
         messageRepository.save(message);
@@ -82,13 +96,31 @@ public class MessageService {
     }
 
     @Transactional
-    public MessagePageResponse getHistory(String conversationId, String userId, Instant before, int limit) {
+    public MessagePageResponse getHistory(String conversationId, MessageHistoryRequestDto messageHistoryRequestDto) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userId = userRepository.findByUsername(auth.getName())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND)).getId();
+
         accessService.getConversation(conversationId);
         accessService.assertMember(conversationId, userId);
 
-        int size = limit <= 0 ? DEFAULT_LIMIT : Math.min(limit, MAX_LIMIT);
+        int size = messageHistoryRequestDto.getLimit() <= 0 ? DEFAULT_LIMIT
+                : Math.min(messageHistoryRequestDto.getLimit(), MAX_LIMIT);
         Pageable page = PageRequest.of(0, size + 1);
 
+        List<Message> rows = (messageHistoryRequestDto.getBefore() == null)
+                ? messageRepository.findByConversationIdOrderByCreatedAtDescIdDesc(conversationId, page)
+                : messageRepository.findByConversationIdAndCreatedAtBeforeOrderByCreatedAtDescIdDesc(conversationId,
+                        messageHistoryRequestDto.getBefore(), page);
+
+        boolean hasMore = rows.size() > size;
+        List<Message> pageRows = hasMore ? rows.subList(0, size) : rows;
+        Instant nextBefore = hasMore ? pageRows.get(pageRows.size() - 1).getCreatedAt() : null;
+
+        return new MessagePageResponse(
+                pageRows.stream().map(messageMapper::toMessageResponse).toList(),
+                hasMore,
+                nextBefore);
     }
 
     private void validateContent(String content) {

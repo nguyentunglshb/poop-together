@@ -1,10 +1,9 @@
 package com.poop_together.dto.request.poopSession;
 
-import java.time.LocalDate;
+import java.time.Instant;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import com.poop_together.enums.SessionStatus;
 
@@ -40,11 +39,9 @@ public class SearchSessionDTO implements Pageable {
 
     SessionStatus status;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    LocalDate from;
+    Instant from;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    LocalDate to;
+    Instant to;
 
     Sort sort;
 

@@ -1,5 +1,16 @@
 package com.poop_together.controller;
 
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
+import java.time.temporal.ChronoField;
+import java.util.Locale;
+
+import org.springframework.format.Formatter;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,7 +36,34 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 @RequiredArgsConstructor 
 @FieldDefaults (level = AccessLevel.PRIVATE, makeFinal = true)
 public class PoopSessionController {
+    private static final DateTimeFormatter DATE_FILTER_FORMAT = new DateTimeFormatterBuilder()
+            .appendValue(ChronoField.YEAR, 4)
+            .appendPattern("-MM-dd")
+            .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+            .toFormatter(Locale.ROOT)
+            .withResolverStyle(ResolverStyle.STRICT)
+            .withZone(PoopSessionService.SESSION_TIME_ZONE);
+
     PoopSessionService poopSessionService;
+
+    @InitBinder("searchSessionDTO")
+    void bindSearchDates(WebDataBinder binder) {
+        binder.addCustomFormatter(new Formatter<Instant>() {
+            @Override
+            public Instant parse(String text, Locale locale) {
+                try {
+                    return DATE_FILTER_FORMAT.parse(text, Instant::from);
+                } catch (DateTimeParseException exception) {
+                    throw new IllegalArgumentException("Expected a valid yyyy-MM-dd date", exception);
+                }
+            }
+
+            @Override
+            public String print(Instant instant, Locale locale) {
+                return DATE_FILTER_FORMAT.format(instant);
+            }
+        }, "from", "to");
+    }
 
     @PostMapping("/start")
     ApiResponse<PoopSessionResponse> startSession() {

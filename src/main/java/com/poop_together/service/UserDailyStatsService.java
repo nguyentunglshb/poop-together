@@ -1,7 +1,8 @@
 package com.poop_together.service;
 
-import java.time.LocalDate;
+import java.time.Instant;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -25,7 +26,9 @@ public class UserDailyStatsService {
     
     @Transactional (propagation = Propagation.MANDATORY)
     public void addSession(PoopSession poopSession) {
-        LocalDate statDate = poopSession.getStartedAt().atZone(STATS_ZONE).toLocalDate();
+        Instant statDate = poopSession.getStartedAt().atZone(STATS_ZONE)
+                .truncatedTo(ChronoUnit.DAYS)
+                .toInstant();
 
         UserDailyStats stats = userDailyStatsRepository
                 .findByUserIdAndStatDate(poopSession.getUserId(), statDate)

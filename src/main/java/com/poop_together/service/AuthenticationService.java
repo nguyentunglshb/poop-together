@@ -35,17 +35,17 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j 
-@Service 
-@RequiredArgsConstructor 
-@FieldDefaults (level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
+@Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationService {
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
     JwtDecoder jwtDecoder;
-    
-    @NonFinal 
-    @Value ("${jwt.signer-key}")
+
+    @NonFinal
+    @Value("${jwt.signer-key}")
     protected String SIGNER_KEY;
 
     public IntrospectResponse introspect(IntrospectRequest req) {
@@ -55,10 +55,12 @@ public class AuthenticationService {
         }
 
         try {
-            Instant expiresAt = jwtDecoder.decode(token).getExpiresAt();
+            var jwt = jwtDecoder.decode((token));
+            Instant expiresAt = jwt.getExpiresAt();
             return IntrospectResponse.builder()
-                .valid(expiresAt != null && expiresAt.isAfter(Instant.now()))
-                .build();
+                    .valid(expiresAt != null && expiresAt.isAfter(Instant.now()))
+                    .userId(jwt.getClaimAsString("user_id"))
+                    .build();
         } catch (BadJwtException e) {
             return IntrospectResponse.builder().valid(false).build();
         }
@@ -66,33 +68,33 @@ public class AuthenticationService {
 
     public AuthenticationResponse authenticated(AuthenticationRequest req) {
         var user = userRepository.findByUsername(req.getUsername())
-        .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         boolean authenticated = passwordEncoder.matches(req.getPassword(), user.getPasswordHash());
 
-        if(!authenticated) {
+        if (!authenticated) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
 
         var token = generateToken(user);
 
         return AuthenticationResponse.builder()
-            .token(token)
-            .authenticated(true)
-            .build();
+                .token(token)
+                .authenticated(true)
+                .build();
     }
 
     public String generateToken(User user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-        .subject(user.getUsername())
-        .issuer("poop-together")
-        .issueTime(new Date())
-        .claim("scope", buildScope(user))
-        .expirationTime(new Date(
-            Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
-        ))
-        .build();
+                .subject(user.getUsername())
+                .issuer("poop-together")
+                .issueTime(new Date())
+                .claim("scope", buildScope(user))
+                .claim("user_id", user.getId())
+                .expirationTime(new Date(
+                        Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()))
+                .build();
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
         JWSObject jwsObject = new JWSObject(header, payload);
 
@@ -107,7 +109,7 @@ public class AuthenticationService {
 
     private String buildScope(User user) {
         StringJoiner stringJoiner = new StringJoiner(" ");
-        if(!CollectionUtils.isEmpty(user.getRoles())) {
+        if (!CollectionUtils.isEmpty(user.getRoles())) {
             user.getRoles().forEach(stringJoiner::add);
         }
         return stringJoiner.toString();

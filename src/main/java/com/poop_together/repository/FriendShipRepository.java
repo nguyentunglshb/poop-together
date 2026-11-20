@@ -13,6 +13,8 @@ public interface FriendShipRepository extends JpaRepository<FriendShip, String> 
    boolean existsByRequesterIdAndAddresseeId(
     String requesterId, String addresseeId);
 
+    boolean existsByRequesterIdAndAddresseeIdAndStatus(String requesterId, String addresseeId, FriendShipStatus status);
+
   List<FriendShip> findByRequesterIdAndStatusOrderByCreatedAtDesc(
       String requesterId, FriendShipStatus status);
 

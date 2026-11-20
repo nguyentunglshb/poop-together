@@ -6,7 +6,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -31,7 +30,7 @@ class UserDailyStatsServiceTests {
         session.setUserId("user-1");
         session.setStartedAt(Instant.parse("2026-11-12T01:00:00Z"));
         session.setDurationSeconds(60);
-        LocalDate statDate = LocalDate.of(2026, 11, 12);
+        Instant statDate = Instant.parse("2026-11-11T17:00:00Z");
         when(repository.findByUserIdAndStatDate(session.getUserId(), statDate))
                 .thenReturn(Optional.empty());
 

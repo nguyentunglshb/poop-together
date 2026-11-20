@@ -21,43 +21,39 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.poop_together.enums.Role;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final String[] PUBLIC_ENDPOINTS = {"/users", "/auth/token", "/auth/introspect"};
+    private final String[] PUBLIC_ENDPOINTS = { "/users", "/auth/token", "/auth/introspect" };
 
-    @Value ("${jwt.signer-key}")
+    @Value("${jwt.signer-key}")
     protected String SIGNER_KEY;
 
-	@Bean
-	@Order(1)
-	public SecurityFilterChain publicEndpointsFilterChain(HttpSecurity http) throws Exception {
-		return http
-			.securityMatchers(matchers -> matchers.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS))
-			.csrf(AbstractHttpConfigurer::disable)
-			.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
-			.build();
-	}
+    @Bean
+    @Order(1)
+    public SecurityFilterChain publicEndpointsFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .securityMatchers(matchers -> matchers.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS))
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
+                .build();
+    }
 
-	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http
-			.authorizeHttpRequests((authorize) -> authorize
-				// .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name())
-                .anyRequest().authenticated()
-			);
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests((authorize) -> authorize
+                        // .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name())
+                        .requestMatchers("/ws/**").permitAll()
+                        .anyRequest().authenticated());
 
         http
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigure -> 
-                jwtConfigure.decoder(jwtDecoder())
-                .jwtAuthenticationConverter(jwtAuthenticationConverter())
-            ));
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigure -> jwtConfigure.decoder(jwtDecoder())
+                        .jwtAuthenticationConverter(jwtAuthenticationConverter())));
 
-		return http.build();
-	}
+        return http.build();
+    }
 
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter() {
@@ -72,9 +68,8 @@ public class SecurityConfig {
     JwtDecoder jwtDecoder() {
         SecretKeySpec secretKeySpec = new SecretKeySpec(SIGNER_KEY.getBytes(StandardCharsets.UTF_8), "HS512");
         return NimbusJwtDecoder.withSecretKey(secretKeySpec)
-            .macAlgorithm(MacAlgorithm.HS512)
-            .build()
-            ;
+                .macAlgorithm(MacAlgorithm.HS512)
+                .build();
     }
 
     @Bean

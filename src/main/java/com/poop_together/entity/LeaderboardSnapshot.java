@@ -1,6 +1,8 @@
 package com.poop_together.entity;
 
-import java.time.LocalDate;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -13,6 +15,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -34,9 +37,8 @@ public class LeaderboardSnapshot {
     @Enumerated (EnumType.STRING)
     LeaderboardPeriod period;
     
-    @CreationTimestamp 
-    @Column (name = "period_start", updatable = false)
-    LocalDate periodStart;
+    @Column (name = "period_start", nullable = false, updatable = false)
+    Instant periodStart;
 
     @Column (name = "user_id")
     String userId;
@@ -48,5 +50,12 @@ public class LeaderboardSnapshot {
 
     @CreationTimestamp 
     @Column (name = "created_at", updatable = false)
-    LocalDate createdAt;
+    Instant createdAt;
+
+    @PrePersist
+    void initializePeriodStart() {
+        periodStart = Instant.now().atZone(ZoneId.of("Asia/Bangkok"))
+                .truncatedTo(ChronoUnit.DAYS)
+                .toInstant();
+    }
 }

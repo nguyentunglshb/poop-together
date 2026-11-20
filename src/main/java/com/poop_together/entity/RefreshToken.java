@@ -1,6 +1,6 @@
 package com.poop_together.entity;
 
-import java.time.LocalDate;
+import java.time.Instant;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -34,12 +34,12 @@ public class RefreshToken {
     String tokenHash;
 
     @Column (name = "expires_at")
-    LocalDate expiresAt;
+    Instant expiresAt;
 
     @Column (name = "revoked_at")
-    LocalDate revokedAt;
+    Instant revokedAt;
 
     @CreationTimestamp 
     @Column (name = "created_at")
-    LocalDate createdAt;
+    Instant createdAt;
 }

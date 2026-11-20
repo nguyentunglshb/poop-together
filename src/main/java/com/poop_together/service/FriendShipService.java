@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.poop_together.dto.request.friendShip.SendFriendRequestDto;
 import com.poop_together.dto.request.friendShip.UpdateStatusRequestDto;
+import com.poop_together.dto.response.UserSummaryResponse;
 import com.poop_together.dto.response.friendShip.FriendShipResponse;
 import com.poop_together.dto.response.friendShip.ReceivedFriendRequestResponse;
 import com.poop_together.dto.response.friendShip.SentFriendRequestResponse;
@@ -57,6 +59,17 @@ public class FriendShipService {
 
     public List<FriendShipResponse> getFriendShips() {
         return friendShipMapper.toFriendShipResponses(friendShipRepository.findAll());
+    }
+
+    public List<UserSummaryResponse> getAcceptedFriends() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userId = userRepository.findByUsername(auth.getName())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)).getId();
+        var sent = friendShipRepository.findByRequesterIdAndStatusOrderByCreatedAtDesc(userId, FriendShipStatus.ACCEPTED);
+        var received = friendShipRepository.findByAddresseeIdAndStatusOrderByCreatedAtDesc(userId, FriendShipStatus.ACCEPTED);
+        Set<String> friendIds = Stream.concat(sent.stream().map(FriendShip::getAddresseeId),
+                received.stream().map(FriendShip::getRequesterId)).collect(Collectors.toSet());
+        return userRepository.findAllById(friendIds).stream().map(UserSummaryResponse::from).toList();
     }
 
     public List<SentFriendRequestResponse> getSentFriendRequests() {

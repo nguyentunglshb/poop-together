@@ -1,4 +1,4 @@
-package com.poop_together.service;
+package com.poop_together.listener;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
@@ -8,6 +8,7 @@ import com.poop_together.dto.response.conversation.MessageCreatedEvent;
 import com.poop_together.dto.response.conversation.MessageResponse;
 import com.poop_together.entity.ConversationMember;
 import com.poop_together.repository.ConversationMemberRepository;
+import com.poop_together.service.RealtimeEventPublisher;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

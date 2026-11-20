@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.poop_together.dto.ApiResponse;
 import com.poop_together.dto.request.friendShip.SendFriendRequestDto;
 import com.poop_together.dto.request.friendShip.UpdateStatusRequestDto;
+import com.poop_together.dto.response.UserSummaryResponse;
 import com.poop_together.dto.response.friendShip.FriendShipResponse;
 import com.poop_together.dto.response.friendShip.ReceivedFriendRequestResponse;
 import com.poop_together.dto.response.friendShip.SentFriendRequestResponse;
@@ -40,6 +41,13 @@ public class FriendShipController {
     ApiResponse<List<FriendShipResponse>> getFriendShips() {
         return ApiResponse.<List<FriendShipResponse>>builder()
                 .result(friendShipService.getFriendShips())
+                .build();
+    }
+
+    @GetMapping("/accepted")
+    ApiResponse<List<UserSummaryResponse>> getAcceptedFriends() {
+        return ApiResponse.<List<UserSummaryResponse>>builder()
+                .result(friendShipService.getAcceptedFriends())
                 .build();
     }
 
